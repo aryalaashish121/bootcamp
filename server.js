@@ -1,16 +1,17 @@
 const express = require('express');
+const morgan = require('morgan');
+const colors = require('colors');
+const connectDB = require('./config/database');
 require('dotenv').config({ path: './config/config.env' });
 const app = express();
-const morgan = require('morgan');
-const bootcampRoute = require('./routes/bootcamp');
 const PORT = process.env.PORT ?? 5000;
-app.get('/', function (req, res) {
-    res.send("hello");
-})
+const bootcampRoute = require('./routes/bootcamp');
+
 class Server {
     constructor() {
         this.runServer();
         this.routes();
+        connectDB();
     }
 
     routes() {
@@ -21,9 +22,16 @@ class Server {
     }
 
     runServer() {
-        app.listen(PORT, () => {
-            console.log(`Application running on ${process.env.NODE_ENV} mode with port ${PORT}`);
+        const server = app.listen(PORT, () => {
+            console.log(`Application running on ${process.env.NODE_ENV} mode with port ${PORT}`.yellow.bold);
+        })
+
+        process.on('unhandledRejection', (err, data) => {
+            console.log(`Error: ${err.message}`);
+            server.close(() => process.exit(1));
         })
     }
+
+
 }
 new Server();
