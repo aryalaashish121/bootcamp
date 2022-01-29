@@ -1,0 +1,24 @@
+{
+  "name": "bootcamp",
+  "version": "1.0.0",
+  "description": "Devcamper backend",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bootcamp",
+    "devcamper"
+  ],
+  "author": "Aashish Aryal",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
