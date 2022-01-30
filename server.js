@@ -6,7 +6,7 @@ require('dotenv').config({ path: './config/config.env' });
 const app = express();
 const PORT = process.env.PORT ?? 5000;
 const bootcampRoute = require('./routes/bootcamp');
-
+app.use(express.json());
 class Server {
     constructor() {
         this.runServer();

@@ -7,6 +7,7 @@ exports.getBootcamps = async (req, res, next) => {
         const bootcamps = await Bootcamp.find();
         res.status(200).send({
             success: true,
+            total: bootcamps.length,
             data: bootcamps
         });
     } catch (error) {
@@ -18,8 +19,17 @@ exports.getBootcamps = async (req, res, next) => {
 //@desc get single bootcamp
 //@route GET /api/v1/bootcamp/:id
 //@access public
-exports.getBootcamp = (req, res, next) => {
-    res.send("single bootcamp");
+exports.getBootcamp = async (req, res, next) => {
+    try {
+        const bootcamp = await Bootcamp.findById(req.params.id);
+        if (!bootcamp) {
+            return res.status(404).send({ success: false });
+        }
+        res.status(200).send({ success: true, data: bootcamp });
+    } catch (error) {
+        res.status(400).send({ success: false, error });
+    }
+
 }
 
 
@@ -41,13 +51,31 @@ exports.createBootcamp = async (req, res, next) => {
 //@desc update bootcamp
 //@route PUT /api/v1/bootcamp/:id
 //@access private
-exports.updateBootcamp = (req, res, next) => {
-    res.send("update bootcamp");
+exports.updateBootcamp = async (req, res, next) => {
+    try {
+        const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, runValidators: true,
+        });
+        if (!bootcamp) {
+            return res.status(400).send({ success: false });
+        }
+        res.status(200).send({ success: true, data: bootcamp });
+    } catch (error) {
+        res.status(400).send({ success: false, error });
+    }
 }
 
 //@desc delete bootcamp
 //@route DELETE /api/v1/bootcamp/:id
 //@access private
-exports.deleteBootcamp = (req, res, next) => {
-    res.send("delete bootcamp");
+exports.deleteBootcamp = async (req, res, next) => {
+    try {
+        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+        if (!bootcamp) {
+            return res.status(400).send({ success: false });
+        }
+        res.status(200).send({ success: true });
+    } catch (error) {
+        res.status(400).send({ success: false });
+    }
 }
