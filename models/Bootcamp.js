@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Slugify = require('slugify');
+const GeoCoder = require('../utils/geocoder');
 const bootcampSchema = mongoose.Schema({
     name: {
         type: String,
@@ -36,24 +37,24 @@ const bootcampSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please enter bootcamp address'],
     },
-    // location: {
-    //     type: {
-    //         type: String, // Don't do `{ location: { type: String } }`
-    //         enum: ['Point'], // 'location.type' must be 'Point'
-    //         required: true
-    //     },
-    //     coordinates: {
-    //         type: [Number],
-    //         required: true,
-    //         index: '2dsphere'
-    //     }
-    // },
-    formattedAddress: String,
-    street: String,
-    city: String,
-    state: String,
-    zipcode: String,
-    country: String,
+    location: {
+        type: {
+            type: String, // Don't do `{ location: { type: String } }`
+            enum: ['Point'], // 'location.type' must be 'Point'
+            // required: true
+        },
+        coordinates: {
+            type: [Number],
+            // required: true,
+            index: '2dsphere'
+        },
+        formattedAddress: String,
+        street: String,
+        city: String,
+        state: String,
+        zipcode: String,
+        country: String,
+    },
     careers: {
         type: [String],
         required: [true, 'Please selected careers'],
@@ -104,5 +105,22 @@ bootcampSchema.pre('save', function (next) {
     this.slug = Slugify(this.name, { lower: true });
     next();
 })
+
+//geocoder
+bootcampSchema.pre('save', async function (next) {
+    const loc = await GeoCoder.geocode(this.address);
+    console.log(loc);
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+        street: loc[0].streetName,
+        city: loc[0].city,
+        state: loc[0].stateCode,
+        zipcode: loc[0].zipcode,
+        country: loc[0].countryCode
+    };
+    next();
+});
 
 module.exports = mongoose.model('Bootcamp', bootcampSchema);
