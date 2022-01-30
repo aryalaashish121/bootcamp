@@ -1,10 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
+const errorHandle = require('./middleware/error');
 const connectDB = require('./config/database');
 require('dotenv').config({ path: './config/config.env' });
 const app = express();
-const PORT = process.env.PORT ?? 5000;
+const PORT = process.env.PORT ?? 3000;
 const bootcampRoute = require('./routes/bootcamp');
 app.use(express.json());
 class Server {
@@ -19,6 +20,8 @@ class Server {
             app.use(morgan('dev'));
         }
         app.use('/api/v1/bootcamps', bootcampRoute);
+
+        app.use(errorHandle);
     }
 
     runServer() {
