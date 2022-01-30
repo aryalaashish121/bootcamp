@@ -23,7 +23,7 @@ const bootcampSchema = mongoose.Schema({
     },
     phone: {
         type: String,
-        maxLength: [10, 'Please enter vaild phone '],
+        maxLength: [20, 'Please enter vaild phone '],
     },
     email: {
         type: String,
@@ -32,7 +32,6 @@ const bootcampSchema = mongoose.Schema({
             'Please enter vaild email!'
         ]
     },
-
     address: {
         type: String,
         required: [true, 'Please enter bootcamp address'],
