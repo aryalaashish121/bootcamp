@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/errorResponse');
 //@desc get all the bootcamps
 //@route GET /api/v1/bootcamps
 //@access public
@@ -11,7 +12,7 @@ exports.getBootcamps = async (req, res, next) => {
             data: bootcamps
         });
     } catch (error) {
-        res.status(500).send({ error });
+        next(error);
     }
 }
 
@@ -23,12 +24,11 @@ exports.getBootcamp = async (req, res, next) => {
     try {
         const bootcamp = await Bootcamp.findById(req.params.id);
         if (!bootcamp) {
-            return res.status(404).send({ success: false });
+            return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
         }
         res.status(200).send({ success: true, data: bootcamp });
     } catch (error) {
         next(error);
-        // res.status(400).send({ success: false, error });
     }
 
 }
@@ -45,7 +45,7 @@ exports.createBootcamp = async (req, res, next) => {
             data: bootcamp
         });
     } catch (error) {
-        res.status(400).send({ success: false, error });
+        next(error);
     }
 }
 
@@ -58,11 +58,11 @@ exports.updateBootcamp = async (req, res, next) => {
             new: true, runValidators: true,
         });
         if (!bootcamp) {
-            return res.status(400).send({ success: false });
+            return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
         }
         res.status(200).send({ success: true, data: bootcamp });
     } catch (error) {
-        res.status(400).send({ success: false, error });
+        next(error);
     }
 }
 
@@ -73,10 +73,10 @@ exports.deleteBootcamp = async (req, res, next) => {
     try {
         const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
         if (!bootcamp) {
-            return res.status(400).send({ success: false });
+            return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
         }
         res.status(200).send({ success: true });
     } catch (error) {
-        res.status(400).send({ success: false });
+        next(error);
     }
 }
