@@ -98,7 +98,8 @@ const bootcampSchema = mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    averageCost: Number,
 });
 
 bootcampSchema.pre('save', function (next) {
