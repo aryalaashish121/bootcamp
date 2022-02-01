@@ -8,6 +8,7 @@ const connectDB = require('./config/database');
 require('dotenv').config({ path: './config/config.env' });
 const bootcampRoute = require('./routes/bootcamp');
 const courseRoute = require('./routes/course');
+const authRoute = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -28,6 +29,7 @@ class Server {
         }
         app.use('/api/v1/bootcamps', bootcampRoute);
         app.use('/api/v1/courses', courseRoute);
+        app.use('/api/v1/auth', authRoute);
 
         app.use(errorHandle);
     }
