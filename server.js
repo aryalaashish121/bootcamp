@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const uploadImage = require('express-fileupload');
 const errorHandle = require('./middleware/error');
 const connectDB = require('./config/database');
@@ -16,6 +17,7 @@ const PORT = process.env.PORT ?? 3000;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(uploadImage());
 app.use(express.json());
+app.use(cookieParser());
 class Server {
     constructor() {
         this.runServer();
