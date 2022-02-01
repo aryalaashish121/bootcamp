@@ -44,10 +44,16 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 //@access private
 exports.createCourse = asyncHandler(async (req, res, next) => {
     req.body.bootcamp = req.params.bootcampId;
+    req.body.user = req.user.id;
     const bootcamp = await Bootcamp.findById(req.params.bootcampId);
     if (!bootcamp) {
         return next(new ErrorResponse(`Bootcamp not found with id ${req.params.bootcampId}`));
     }
+
+    if (bootcamp.user.toString() !== req.user.id && req.user.role != 'admin') {
+        return next(new ErrorResponse('You are not authorized to add couse to this bootcamp', 403));
+    }
+
     const course = await Course.create(req.body);
     res.status(201).send({
         success: true,
@@ -59,12 +65,18 @@ exports.createCourse = asyncHandler(async (req, res, next) => {
 //@route PUT /api/v1/courses/:id
 //@access private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-    const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-        new: true, runValidators: true,
-    });
+    let course = await Course.findById(req.params.id);
     if (!course) {
         return next(new ErrorResponse(`Course not found with id ${req.params.id}`, 404));
     }
+    console.log(course);
+    //check owenership of course
+    if (course.user.toString() !== req.user.id && req.user.role != 'admin') {
+        return next(new ErrorResponse('You are not authorized to update this course', 403));
+    }
+    course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+        new: true, runValidators: true,
+    });
     res.status(200).send({ success: true, data: course });
 })
 
@@ -75,6 +87,10 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
     const course = await Course.findById(req.params.id);
     if (!course) {
         return next(new ErrorResponse(`Course not found with id ${req.params.id}`, 404));
+    }
+    //check owenership of course
+    if (course.user.toString() !== req.user.id && req.user.role != 'admin') {
+        return next(new ErrorResponse('You are not authorized to update this course', 403));
     }
     course.remove();
     res.status(200).send({ success: true });

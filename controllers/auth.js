@@ -45,6 +45,18 @@ exports.login = asyncHandler(async (req, res, next) => {
     sendTokenResponse(user, 200, res);
 })
 
+//@desc Register new user
+//@route POST /api/v1/auth/register
+//@access public
+exports.getMe = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    res.status(200).send({
+        success: true,
+        data: user
+    })
+
+});
+
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
 
