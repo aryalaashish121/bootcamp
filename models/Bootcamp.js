@@ -106,6 +106,7 @@ const bootcampSchema = mongoose.Schema({
 
     },
     averageCost: Number,
+    averageRating: Number,
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
