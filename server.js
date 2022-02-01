@@ -11,6 +11,7 @@ const bootcampRoute = require('./routes/bootcamp');
 const courseRoute = require('./routes/course');
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
+const reviews = require('./routes/review');
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 //set static folder to public
@@ -33,6 +34,7 @@ class Server {
         app.use('/api/v1/courses', courseRoute);
         app.use('/api/v1/auth', authRoute);
         app.use('/api/v1/users', userRoute);
+        app.use('/api/v1/reviews', reviews);
 
         app.use(errorHandle);
     }
