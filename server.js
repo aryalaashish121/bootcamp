@@ -10,7 +10,7 @@ require('dotenv').config({ path: './config/config.env' });
 const bootcampRoute = require('./routes/bootcamp');
 const courseRoute = require('./routes/course');
 const authRoute = require('./routes/auth');
-
+const userRoute = require('./routes/user');
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 //set static folder to public
@@ -32,6 +32,7 @@ class Server {
         app.use('/api/v1/bootcamps', bootcampRoute);
         app.use('/api/v1/courses', courseRoute);
         app.use('/api/v1/auth', authRoute);
+        app.use('/api/v1/users', userRoute);
 
         app.use(errorHandle);
     }
