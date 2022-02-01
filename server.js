@@ -2,6 +2,14 @@ const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
 const path = require('path');
+const cors = require('cors');
+//security
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xssClean = require('xss-clean');
+const hpp = require('hpp');
+const expressRateLimit = require('express-rate-limit');
+
 const cookieParser = require('cookie-parser');
 const uploadImage = require('express-fileupload');
 const errorHandle = require('./middleware/error');
@@ -19,6 +27,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(uploadImage());
 app.use(express.json());
 app.use(cookieParser());
+app.use(mongoSanitize());
+//set security headers
+app.use(helmet());
+app.use(xssClean());
+app.use(hpp());
+
+const limiter = expressRateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 100
+});
+
+app.use(limiter);
+//enable cors
+app.use(cors());
 class Server {
     constructor() {
         this.runServer();
