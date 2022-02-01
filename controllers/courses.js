@@ -8,23 +8,18 @@ const ErrorResponse = require('../utils/errorResponse');
 //@access public
 exports.allCourses = asyncHandler(async (req, res, next) => {
     let query;
-
     if (req.params.bootcampId) {
         query = Course.find({ bootcamp: req.params.bootcampId });
-    } else {
-        query = Course.find().populate({
-            path: 'bootcamp',
-            select: 'name description'
+        const courses = await query;
+        return res.status(200).send({
+            success: true,
+            total: courses.length,
+            data: courses
         });
+    } else {
+        res.status(200).send(res.advanceResult);
     }
 
-    //executing query
-    const courses = await query;
-    res.status(200).send({
-        success: true,
-        total: courses.length,
-        data: courses
-    });
 })
 
 

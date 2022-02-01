@@ -1,13 +1,19 @@
 const express = require('express');
 const morgan = require('morgan');
 const colors = require('colors');
+const path = require('path');
+const uploadImage = require('express-fileupload');
 const errorHandle = require('./middleware/error');
 const connectDB = require('./config/database');
 require('dotenv').config({ path: './config/config.env' });
-const app = express();
-const PORT = process.env.PORT ?? 3000;
 const bootcampRoute = require('./routes/bootcamp');
 const courseRoute = require('./routes/course');
+
+const app = express();
+const PORT = process.env.PORT ?? 3000;
+//set static folder to public
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(uploadImage());
 app.use(express.json());
 class Server {
     constructor() {
